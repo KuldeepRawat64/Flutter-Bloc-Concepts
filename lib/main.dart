@@ -10,31 +10,23 @@ void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatefulWidget {
+class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
   @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  final AppRouter _appRouter = AppRouter();
-  // This widget is the root of your application.
-  @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      onGenerateRoute: _appRouter.onGenerateRoute,
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // is not restarted.
-        primarySwatch: Colors.blue,
+    final AppRouter appRouter = AppRouter();
+
+    return BlocProvider<CounterCubit>(
+      create: (context) => CounterCubit(),
+      child: MaterialApp(
+        onGenerateRoute: appRouter.onGenerateRoute,
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          // is not restarted.
+          primarySwatch: Colors.blue,
+        ),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    _appRouter.dispose;
-    super.dispose();
   }
 }
