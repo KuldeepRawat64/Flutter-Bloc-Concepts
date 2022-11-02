@@ -9,8 +9,7 @@ void main() {
   group('CounterCubit', () {
     late CounterCubit counterCubit;
     setUp(() {
-      counterCubit = CounterCubit(
-          internetCubit: InternetCubit(connectivity: Connectivity()));
+      counterCubit = CounterCubit();
     });
 
     tearDown(() {
