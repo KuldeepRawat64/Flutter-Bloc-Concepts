@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_bloc_concepts/logic/cubit/counter_cubit.dart';
 import 'package:flutter_bloc_concepts/logic/cubit/internet_cubit.dart';
+import 'package:flutter_bloc_concepts/logic/cubit/settings_cubit.dart';
 import 'package:flutter_bloc_concepts/presentation/router/app_router.dart';
 
 void main() {
@@ -23,11 +24,13 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<InternetCubit>(
-          create: (internetCubitContext) =>
-              InternetCubit(connectivity: connectivity),
+          create: (context) => InternetCubit(connectivity: connectivity),
         ),
         BlocProvider<CounterCubit>(
-          create: (counterCubitContext) => CounterCubit(),
+          create: (context) => CounterCubit(),
+        ),
+        BlocProvider<SettingsCubit>(
+          create: (context) => SettingsCubit(),
         ),
       ],
       child: MaterialApp(

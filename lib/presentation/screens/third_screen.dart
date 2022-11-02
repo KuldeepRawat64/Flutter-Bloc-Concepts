@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_bloc_concepts/logic/cubit/counter_cubit.dart';
+import 'package:flutter_bloc_concepts/logic/cubit/settings_cubit.dart';
 
 class ThirdScreen extends StatefulWidget {
   final String title;
@@ -18,63 +19,65 @@ class ThirdScreen extends StatefulWidget {
 class _ThirdScreenState extends State<ThirdScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: widget.color,
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
+    return BlocListener<SettingsCubit, SettingsState>(
+      listener: (context, state) {
+        if (state.appNotifications == true) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                  'App: ${state.appNotifications} Email: ${state.emailNotifications}'),
+              duration: const Duration(milliseconds: 300),
             ),
-            Column(
-              children: [
-                BlocConsumer<CounterCubit, CounterState>(
-                  listener: (context, state) {
-                    if (state.isIncremented == true) {
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                          duration: Duration(milliseconds: 100),
-                          content: Text('Incremented!')));
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                          duration: Duration(milliseconds: 100),
-                          content: Text('Decremented!')));
-                    }
-                  },
-                  builder: (context, state) {
-                    return Text(
-                      '${state.counterValue}',
-                      style: Theme.of(context).textTheme.headline4,
-                    );
-                  },
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    FloatingActionButton(
-                      heroTag: 'FA5',
-                      onPressed: () {
-                        BlocProvider.of<CounterCubit>(context).decrement();
-                      },
-                      tooltip: 'Decrement',
-                      child: const Icon(Icons.remove),
-                    ),
-                    FloatingActionButton(
-                      heroTag: 'FA6',
-                      onPressed: () {
-                        BlocProvider.of<CounterCubit>(context).increment();
-                      },
-                      tooltip: 'Increment',
-                      child: const Icon(Icons.add),
-                    ),
-                  ],
-                )
-              ],
+          );
+        } else if (state.emailNotifications == true) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                  'App: ${state.appNotifications} Email: ${state.emailNotifications}'),
+              duration: const Duration(milliseconds: 300),
             ),
-          ],
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                  'App: ${state.appNotifications} Email: ${state.emailNotifications}'),
+              duration: const Duration(milliseconds: 300),
+            ),
+          );
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: widget.color,
+          title: Text(widget.title),
+        ),
+        body: Center(
+          child: BlocBuilder<SettingsCubit, SettingsState>(
+            builder: (context, state) {
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  SwitchListTile(
+                      title: const Text('App Notifications'),
+                      value: state.appNotifications,
+                      onChanged: (newValue) {
+                        context
+                            .read<SettingsCubit>()
+                            .toggleAppNotifications(newValue);
+                      }),
+                  SwitchListTile(
+                      title: const Text('Email Notifications'),
+                      value: state.emailNotifications,
+                      onChanged: (newValue) {
+                        context
+                            .read<SettingsCubit>()
+                            .toggleEmailNotifications(newValue);
+                      })
+                ],
+              );
+            },
+          ),
         ),
       ),
     );
