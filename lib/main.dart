@@ -5,12 +5,20 @@ import 'package:flutter_bloc_concepts/logic/cubit/counter_cubit.dart';
 import 'package:flutter_bloc_concepts/logic/cubit/internet_cubit.dart';
 import 'package:flutter_bloc_concepts/logic/cubit/settings_cubit.dart';
 import 'package:flutter_bloc_concepts/presentation/router/app_router.dart';
+import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:path_provider/path_provider.dart';
 
-void main() {
-  runApp(MyApp(
-    connectivity: Connectivity(),
-    appRouter: AppRouter(),
-  ));
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final storage = await HydratedStorage.build(
+      storageDirectory: await getApplicationDocumentsDirectory());
+
+  HydratedBlocOverrides.runZoned(
+      () => runApp(MyApp(
+            connectivity: Connectivity(),
+            appRouter: AppRouter(),
+          )),
+      storage: storage);
 }
 
 class MyApp extends StatelessWidget {
