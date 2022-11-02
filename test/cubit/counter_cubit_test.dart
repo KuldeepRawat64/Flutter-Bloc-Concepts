@@ -1,5 +1,7 @@
 import 'package:bloc_test/bloc_test.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_bloc_concepts/logic/cubit/counter_cubit.dart';
+import 'package:flutter_bloc_concepts/logic/cubit/internet_cubit.dart';
 import 'package:test/expect.dart';
 import 'package:test/scaffolding.dart';
 
@@ -7,7 +9,8 @@ void main() {
   group('CounterCubit', () {
     late CounterCubit counterCubit;
     setUp(() {
-      counterCubit = CounterCubit();
+      counterCubit = CounterCubit(
+          internetCubit: InternetCubit(connectivity: Connectivity()));
     });
 
     tearDown(() {

@@ -1,24 +1,37 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_bloc_concepts/logic/cubit/counter_cubit.dart';
+import 'package:flutter_bloc_concepts/logic/cubit/internet_cubit.dart';
 import 'package:flutter_bloc_concepts/presentation/router/app_router.dart';
-import 'package:flutter_bloc_concepts/presentation/screens/home_screen.dart';
-import 'package:flutter_bloc_concepts/presentation/screens/second_screen.dart';
-import 'package:flutter_bloc_concepts/presentation/screens/third_screen.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp(
+    connectivity: Connectivity(),
+    appRouter: AppRouter(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  final AppRouter appRouter;
+  final Connectivity connectivity;
+  const MyApp({Key? key, required this.appRouter, required this.connectivity})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final AppRouter appRouter = AppRouter();
-
-    return BlocProvider<CounterCubit>(
-      create: (context) => CounterCubit(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<InternetCubit>(
+          create: (internetCubitContext) =>
+              InternetCubit(connectivity: connectivity),
+        ),
+        BlocProvider<CounterCubit>(
+          create: (counterCubitContext) => CounterCubit(
+              internetCubit:
+                  BlocProvider.of<InternetCubit>(counterCubitContext)),
+        ),
+      ],
       child: MaterialApp(
         onGenerateRoute: appRouter.onGenerateRoute,
         title: 'Flutter Demo',
